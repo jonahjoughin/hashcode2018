@@ -7,10 +7,10 @@ args = {}
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--input", "-i",help="Input file to read", required="true")
-parser.add_argument("--output", "-o",help="Output file to write to", required="true")
 args = parser.parse_args()
 inputFile = args.input
-outputFile = args.output
+outputFile = inputFile.split(".")[0]+".out"
+print(outputFile)
 
 
 Point = namedtuple("Point", "x y")
@@ -32,7 +32,6 @@ def ride(line, i):
 # M Threshold and A Threshold control sensitivity of closeEnough
 # Increasing them will result in more rides being considered "close enough"
 def closeEnough(car, ride, current, m_thresh, a_thresh):
-
   pickup_distance = distance(car, ride.start)
   trip_distance = distance(ride.start, ride.end)
   if (ride.latest < (current + pickup_distance - 1)):
