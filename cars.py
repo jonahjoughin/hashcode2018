@@ -111,7 +111,3 @@ for key in out.keys():
     els.append(str(val))
   line = " ".join(els)+"\n"
   f.write(line)
-
-print([base_value(cars[0], ride, time) for ride in rides])
-print([base_value(cars[0], ride, time) for ride in cr])
-print(base_value(cars[0], bestRide, time))
