@@ -7,10 +7,10 @@ args = {}
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--input", "-i",help="Input file to read", required="true")
-parser.add_argument("--output", "-o",help="Output file to write to", required="true")
 args = parser.parse_args()
 inputFile = args.input
-outputFile = args.output
+outputFile = inputFile.split(".")[0]+".out"
+print(outputFile)
 
 
 Point = namedtuple("Point", "x y")
