@@ -35,7 +35,7 @@ def closeEnough(car, ride, current, m_thresh, a_thresh):
 
   pickup_distance = distance(car, ride.start)
   trip_distance = distance(ride.start, ride.end)
-  if (ride.latest < current + pickup_distance):
+  if (ride.latest < (current + pickup_distance - 1)):
     return False
   if (trip_distance * m_thresh < pickup_distance):
     return False
@@ -78,8 +78,8 @@ out = {car.id: [] for car in cars}
 while time < T:
   if (len(cars) == 0):
     break
-  for car in cars:
-    cr = candidateRides(car, rides, 0, 0.1, 0.2)
+  for (i, car) in enumerate(cars):
+    cr = candidateRides(car, rides, car.free, 0.1, 0.2)
     if (cr != []):
       bestRide = max(cr, key=lambda x: base_value(car, x, car.free))
       bestVal = base_value(car, bestRide, car.free)
@@ -95,7 +95,8 @@ while time < T:
         ####### Add in check here to make sure we dont run out of time
         if (car.free + trip_distance + max(pickup_distance, pickup_time) < T):
           rides.remove(bestRide)
-          car = Car(car.x, car.y, car.free + trip_distance + max(pickup_distance, pickup_time), car.id)
+          car = Car(bestRide.end.x, bestRide.end.y, car.free + trip_distance + max(pickup_distance, pickup_time), car.id)
+          cars[i] = car
           time = min(time, car.free)
           out[car.id].append(bestRide.id)
           print(bestVal)
