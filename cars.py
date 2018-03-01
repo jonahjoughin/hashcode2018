@@ -43,7 +43,7 @@ def candidateRides(car, rides, current, m_thresh, a_thresh):
 
 def base_value(car, ride, current):
   if (ride.begin < current):
-    return None
+    return 0
   trip_distance = distance(ride.start, ride.end)
   pickup_distance = distance(ride.start, car)
   pickup_time = ride.begin - current
