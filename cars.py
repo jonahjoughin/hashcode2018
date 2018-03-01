@@ -66,3 +66,11 @@ bestRide = max(cr, key=lambda x: base_value(cars[0], x, time))
 print([base_value(cars[0], ride, time) for ride in rides])
 print([base_value(cars[0], ride, time) for ride in cr])
 print(base_value(cars[0], bestRide, time))
+
+
+shortestDIstances = []
+def gotToRide():
+    minD = 0;
+    for car in cars:
+        minD = min(distance())
+        shortestDIstances.append()
