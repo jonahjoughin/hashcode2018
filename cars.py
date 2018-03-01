@@ -34,6 +34,8 @@ def ride(line, i):
 def closeEnough(car, ride, current, m_thresh, a_thresh):
   pickup_distance = distance(car, ride.start)
   trip_distance = distance(ride.start, ride.end)
+  if (ride.begin < current):
+    return False
   if (ride.latest < (current + pickup_distance - 1)):
     return False
   if (trip_distance * m_thresh < pickup_distance):
@@ -45,7 +47,7 @@ def closeEnough(car, ride, current, m_thresh, a_thresh):
 def candidateRides(car, rides, current, m_thresh, a_thresh):
   crs = [ride for ride in rides if closeEnough(car, ride, current, m_thresh, a_thresh)]
   # Increase thresholds if not enough values found
-  if len(crs) < 1 and m_thresh < 1<<8 and a_thresh < 1<<8:
+  if len(crs) < 1 and m_thresh < 1<<32 and a_thresh < 1<<32:
      return candidateRides(car, rides, current, m_thresh*2, a_thresh*2)
   else:
     return crs
@@ -82,26 +84,23 @@ while time < T:
     if (cr != []):
       bestRide = max(cr, key=lambda x: base_value(car, x, car.free))
       bestVal = base_value(car, bestRide, car.free)
-      if bestVal <= 0:
-        cars.remove[car]
+      ######## Add in check here for whether this is a better car for this ride
+
+      trip_distance = distance(bestRide.start, bestRide.end)
+      pickup_distance = distance(bestRide.start, car)
+      pickup_time = bestRide.begin - car.free
+
+      ####### Add in check here to make sure we dont run out of time
+      if (car.free + trip_distance + max(pickup_distance, pickup_time) < T):
+        rides.remove(bestRide)
+        car = Car(bestRide.end.x, bestRide.end.y, car.free + trip_distance + max(pickup_distance, pickup_time), car.id)
+        cars[i] = car
+        out[car.id].append(bestRide.id)
+        print(bestVal)
       else:
-        ######## Add in check here for whether this is a better car for this ride
-
-        trip_distance = distance(bestRide.start, bestRide.end)
-        pickup_distance = distance(bestRide.start, car)
-        pickup_time = bestRide.begin - car.free
-
-        ####### Add in check here to make sure we dont run out of time
-        if (car.free + trip_distance + max(pickup_distance, pickup_time) < T):
-          rides.remove(bestRide)
-          car = Car(bestRide.end.x, bestRide.end.y, car.free + trip_distance + max(pickup_distance, pickup_time), car.id)
-          cars[i] = car
-          time = min(time, car.free)
-          out[car.id].append(bestRide.id)
-          print(bestVal)
-        else:
-          cars.remove(car)
+        cars.remove(car)
     else:
+      print("Empty results")
       cars.remove(car)
 
 f = open(outputFile, "w")
