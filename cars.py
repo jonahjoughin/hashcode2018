@@ -1,4 +1,5 @@
 from collections import namedtuple
+import sys
 import argparse
 
 args = {}
@@ -44,7 +45,7 @@ def closeEnough(car, ride, current, m_thresh, a_thresh):
 def candidateRides(car, rides, current, m_thresh, a_thresh):
   crs = [ride for ride in rides if closeEnough(car, ride, current, m_thresh, a_thresh)]
   # Increase thresholds if not enough values found
-  if len(crs) < 1 and m_thresh < 1<<32 and a_thresh < 1<<32:
+  if len(crs) < 1 and m_thresh < 1<<8 and a_thresh < 1<<8:
      return candidateRides(car, rides, current, m_thresh*2, a_thresh*2)
   else:
     return crs
@@ -77,35 +78,34 @@ while time < T:
   if (len(cars) == 0):
     break
   for car in cars:
-    cr = candidateRides(car, rides, 0, 1, 2)
+    cr = candidateRides(car, rides, 0, 0.1, 0.2)
     if (cr != []):
       bestRide = max(cr, key=lambda x: base_value(car, x, car.free))
       bestVal = base_value(car, bestRide, car.free)
-
-      ######## Add in check here for whether this is a better car for this ride
-
-      trip_distance = distance(bestRide.start, bestRide.end)
-      pickup_distance = distance(bestRide.start, car)
-      pickup_time = bestRide.begin - car.free
-
-      ####### Add in check here to make sure we dont run out of time
-      if (car.free + trip_distance + max(pickup_distance, pickup_time) < T):
-        rides.remove(bestRide)
-        car = Car(car.x, car.y, car.free + trip_distance + max(pickup_distance, pickup_time), car.id)
-        if out[car.id] == None:
-          out[car.id] == [bestRide.id]
-        else:
-          out[car.id].append(bestRide.id)
-        print(bestVal)
+      if bestVal <= 0:
+        cars.remove[car]
       else:
-        cars.remove(car)
-      time = min(time, car.free)
+        ######## Add in check here for whether this is a better car for this ride
+
+        trip_distance = distance(bestRide.start, bestRide.end)
+        pickup_distance = distance(bestRide.start, car)
+        pickup_time = bestRide.begin - car.free
+
+        ####### Add in check here to make sure we dont run out of time
+        if (car.free + trip_distance + max(pickup_distance, pickup_time) < T):
+          rides.remove(bestRide)
+          car = Car(car.x, car.y, car.free + trip_distance + max(pickup_distance, pickup_time), car.id)
+          time = min(time, car.free)
+          out[car.id].append(bestRide.id)
+          print(bestVal)
+        else:
+          cars.remove(car)
     else:
       cars.remove(car)
 
 f = open(outputFile, "w")
 for key in out.keys():
-  els = [str(key)]
+  els = [str(len(out[key]))]
   for val in out[key]:
     els.append(str(val))
   line = " ".join(els)+"\n"
