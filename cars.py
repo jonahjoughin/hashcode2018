@@ -33,8 +33,8 @@ def candidateRides(car, rides, current, thresh):
 def base_cost(car, ride, current):
   if (ride.begin < current):
     return None
-  trip_distance = abs(ride.end.x - ride.start.x) + abs(ride.end.y - ride.start.y)
-  pickup_distance = abs(car.x - ride.start.x) + abs(car.y - ride.start.y)
+  trip_distance = distance(ride.start, ride.end)
+  pickup_distance = distance(car.start, ride.end)
   pickup_time = ride.begin - current
   elapsed = max(pickup_distance, pickup_time) + trip_distance
   pickup_points = B if pickup_distance <= pickup_time else 0
