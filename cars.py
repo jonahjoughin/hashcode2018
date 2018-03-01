@@ -16,6 +16,8 @@ def ride(line):
   latest = finish - distance(start, end)
   return Ride(start, latest, end, begin, finish)
 
+# M Threshold and A Threshold control sensitivity of closeEnough
+# Increasing them will result in more rides being considered "close enough"
 def closeEnough(car, ride, current, m_thresh, a_thresh):
 
   pickup_distance = distance(car, ride.start)
@@ -30,6 +32,7 @@ def closeEnough(car, ride, current, m_thresh, a_thresh):
 
 def candidateRides(car, rides, current, m_thresh, a_thresh):
   crs = [ride for ride in rides if closeEnough(car, ride, current, m_thresh, a_thresh)]
+  # Increase thresholds if not enough values found
   if len(crs) < 2:
      return candidateRides(car, rides, current, m_thresh*2, a_thresh*2)
   else:
@@ -49,6 +52,8 @@ def base_value(car, ride, current):
   on_time_points = trip_distance if (current + elapsed) < ride.finish else 0
   return (pickup_points + on_time_points) / elapsed
 
+# Parse input
+
 lines = [line.rstrip("\n") for line in open("b_should_be_easy.in")]
 R, C, F, N, B, T = [int(x) for x in lines[0].split(" ")]
 rides = [ride(line) for line in lines[1:]]
@@ -61,4 +66,3 @@ bestRide = max(cr, key=lambda x: base_value(cars[0], x, time))
 print([base_value(cars[0], ride, time) for ride in rides])
 print([base_value(cars[0], ride, time) for ride in cr])
 print(base_value(cars[0], bestRide, time))
-#print(rides)
