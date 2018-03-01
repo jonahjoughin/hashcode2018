@@ -103,11 +103,3 @@ for key in out.keys():
 print([base_value(cars[0], ride, time) for ride in rides])
 print([base_value(cars[0], ride, time) for ride in cr])
 print(base_value(cars[0], bestRide, time))
-
-
-shortestDIstances = []
-def gotToRide():
-    minD = 0;
-    for car in cars:
-        minD = min(distance())
-        shortestDIstances.append()
