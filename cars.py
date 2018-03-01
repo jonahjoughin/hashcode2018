@@ -1,4 +1,16 @@
 from collections import namedtuple
+import argparse
+
+args = {}
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--input", "-i",help="Input file to read", required="true")
+parser.add_argument("--output", "-o",help="Output file to write to", required="true")
+args = parser.parse_args()
+inputFile = args.input
+outputFile = args.output
+
 
 Point = namedtuple("Point", "x y")
 Car = namedtuple("Car", "x y free id")
@@ -54,7 +66,7 @@ def base_value(car, ride, current):
 
 # Parse input
 
-lines = [line.rstrip("\n") for line in open("b_should_be_easy.in")]
+lines = [line.rstrip("\n") for line in open(inputFile)]
 R, C, F, N, B, T = [int(x) for x in lines[0].split(" ")]
 rides = [ride(line,i) for (i,line) in enumerate(lines[1:])]
 cars = [Car(0, 0, 0, x) for x in range(F)]
@@ -92,7 +104,7 @@ while time < T:
     else:
       cars.remove(car)
 
-f = open("b_should_be_easy.out", "w")
+f = open(outputFile, "w")
 for key in out.keys():
   els = [str(key)]
   for val in out[key]:
